@@ -1,20 +1,20 @@
 extern crate core;
 
+use config::Config;
+pub use metrics::exporter::main as metrics_exporter_main;
+use std::path::Path;
+use tracing::LogLevel;
+use tracing_log::LogTracer;
+use tracing_subscriber::util::SubscriberInitExt;
+
 pub mod clock;
 pub mod config;
 pub mod metrics;
 pub mod observer;
+pub mod port;
 pub mod socket;
 pub mod tlvforwarder;
 pub mod tracing;
-
-use std::path::Path;
-
-use config::Config;
-pub use metrics::exporter::main as metrics_exporter_main;
-use tracing::LogLevel;
-use tracing_log::LogTracer;
-use tracing_subscriber::util::SubscriberInitExt;
 
 pub fn initialize_logging_parse_config(path: &Path) -> Config {
     LogTracer::init().expect("Internal error: could not attach logger");

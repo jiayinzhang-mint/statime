@@ -622,6 +622,11 @@ impl Filter for KalmanFilter {
         // of correct
         self.change_frequency(0.0, clock);
     }
+
+    /// Get offset in seconds
+    fn get_offset_s(&self) -> f64 {
+        self.running_filter.offset()
+    }
 }
 
 impl KalmanFilter {

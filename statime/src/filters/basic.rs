@@ -32,6 +32,8 @@ pub struct BasicFilter {
     gain: f64,
 
     cur_freq: f64,
+
+    offset: f64,
 }
 
 impl Filter for BasicFilter {
@@ -44,6 +46,7 @@ impl Filter for BasicFilter {
             freq_confidence: 1e-4,
             gain,
             cur_freq: 0.0,
+            offset: 0.0,
         }
     }
 
@@ -76,6 +79,7 @@ impl Filter for BasicFilter {
         }
 
         // Determine offset
+        self.offset = offset.seconds();
         let mut clamped_offset = offset;
         if offset.abs() > self.offset_confidence {
             clamped_offset = offset.clamp(-self.offset_confidence, self.offset_confidence);
@@ -153,5 +157,9 @@ impl Filter for BasicFilter {
     fn update<C: Clock>(&mut self, _clock: &mut C) -> FilterUpdate {
         // ignore
         Default::default()
+    }
+
+    fn get_offset_s(&self) -> f64 {
+        self.offset
     }
 }

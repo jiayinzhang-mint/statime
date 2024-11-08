@@ -51,4 +51,7 @@ pub trait Filter {
     /// Handle ending of time synchronization from the source
     /// associated with this filter.
     fn demobilize<C: Clock>(self, clock: &mut C);
+
+    /// Get clock offset in seconds
+    fn get_offset_s(&self) -> f64;
 }

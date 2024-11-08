@@ -609,6 +609,10 @@ mod tests {
         fn update<C: Clock>(&mut self, _clock: &mut C) -> FilterUpdate {
             Default::default()
         }
+
+        fn get_offset_s(&self) -> f64 {
+            0.0
+        }
     }
 
     #[test]

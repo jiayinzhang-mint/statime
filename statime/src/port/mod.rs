@@ -587,6 +587,11 @@ impl<L, A, R, C, F: Filter, S> Port<'_, L, A, R, C, F, S> {
     pub(crate) fn number(&self) -> u16 {
         self.port_identity.port_number
     }
+
+    /// Get clock offset in seconds
+    pub fn get_offset_s(&self) -> f64 {
+        self.filter.get_offset_s()
+    }
 }
 
 impl<'a, A, C, F: Filter, R: Rng, S: PtpInstanceStateMutex> Port<'a, InBmca, A, R, C, F, S> {
