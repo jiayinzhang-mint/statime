@@ -3,15 +3,26 @@ use crate::{
     config::Config,
     metrics::exporter::{ObservableState, ProgramData},
 };
-use std::{fs::Permissions, os::unix::prelude::PermissionsExt, path::Path, time::Instant};
-use tokio::{io::AsyncWriteExt, net::UnixStream};
+use async_trait::async_trait;
+use std::{
+    fs::Permissions,
+    os::unix::prelude::PermissionsExt,
+    path::Path,
+    sync::{Arc, Mutex},
+    time::Instant,
+};
+use tokio::{io::AsyncWriteExt, net::UnixStream, sync::watch::Receiver};
 
-pub struct JsonObserver {}
+pub struct JsonObserver {
+    state: Arc<Mutex<ObservableInstanceState>>,
+}
+
+#[async_trait]
 impl Observer for JsonObserver {
     async fn observe(
         &self,
         config: &Config,
-        instance_state_receiver: tokio::sync::watch::Receiver<ObservableInstanceState>,
+        instance_state_receiver: Receiver<ObservableInstanceState>,
     ) -> std::io::Result<()> {
         let start_time = Instant::now();
 
@@ -32,12 +43,39 @@ impl Observer for JsonObserver {
         loop {
             let (mut stream, _addr) = peers_listener.accept().await?;
 
+            let state = instance_state_receiver.borrow().to_owned();
+
             let observe = ObservableState {
                 program: ProgramData::with_uptime(start_time.elapsed().as_secs_f64()),
-                instance: instance_state_receiver.borrow().to_owned(),
+                instance: state.clone(),
             };
 
+            match self.state.lock() {
+                Ok(mut _state) => *_state = instance_state_receiver.borrow().to_owned(),
+                Err(err) => {
+                    tracing::error!(err=?err, "Failed to lock state");
+                }
+            }
+
             write_json(&mut stream, &observe).await?;
+        }
+    }
+
+    async fn get_state(&self) -> ObservableInstanceState {
+        match self.state.lock() {
+            Ok(_state) => _state.clone(),
+            Err(e) => {
+                tracing::error!(err=?e, "Failed to lock state");
+                ObservableInstanceState::default()
+            }
+        }
+    }
+}
+
+impl JsonObserver {
+    pub fn new() -> JsonObserver {
+        JsonObserver {
+            state: Arc::new(Mutex::new(ObservableInstanceState::default())),
         }
     }
 }

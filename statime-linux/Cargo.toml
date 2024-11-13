@@ -39,6 +39,7 @@ serde_json.workspace = true
 
 clock-steering.workspace = true
 timestamped-socket.workspace = true
+async-trait = "0.1.83"
 
 [package.metadata.deb]
 name = "statime"

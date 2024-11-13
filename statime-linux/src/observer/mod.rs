@@ -3,13 +3,15 @@
 pub mod json;
 
 use crate::config::Config;
+use async_trait::async_trait;
 use statime::{
     config::TimePropertiesDS,
     observability::{current::CurrentDS, default::DefaultDS, parent::ParentDS, PathTraceDS},
 };
+use tokio::sync::watch::Receiver;
 
 /// Observable version of the InstanceState struct
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, Default)]
 pub struct ObservableInstanceState {
     /// A concrete implementation of the PTP Default dataset (IEEE1588-2019
     /// section 8.2.1)
@@ -30,10 +32,13 @@ pub struct ObservableInstanceState {
     pub offset_s: Vec<f64>,
 }
 
-pub trait Observer {
+#[async_trait]
+pub trait Observer: Send + Sync {
     async fn observe(
         &self,
         config: &Config,
-        instance_state_receiver: tokio::sync::watch::Receiver<ObservableInstanceState>,
+        instance_state_receiver: Receiver<ObservableInstanceState>,
     ) -> std::io::Result<()>;
+
+    async fn get_state(&self) -> ObservableInstanceState;
 }

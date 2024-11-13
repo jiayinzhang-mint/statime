@@ -11,7 +11,7 @@ use crate::{
 /// - observedParentOffsetScaledLogVariance
 /// - observedParentClockPhaseChangeRate
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ParentDS {
     /// See *IEEE1588-2019 section 8.2.3.2*.

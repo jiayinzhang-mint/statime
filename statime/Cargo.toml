@@ -25,6 +25,7 @@ libm.workspace = true
 log = { workspace = true, default-features = false}
 rand = { workspace = true, default-features = false }
 serde = { workspace = true, optional = true }
+tracing.workspace = true
 
 [dev-dependencies]
 serde_test.workspace = true

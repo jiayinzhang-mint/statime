@@ -4,7 +4,7 @@ use crate::datastructures::{common::ClockIdentity, messages::MAX_DATA_LEN};
 
 /// A concrete implementation of the PTP Path Trace dataset
 /// (IEEE1588-2019 section 16.2.2)
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct PathTraceDS {
     /// See *IEEE1588-2019 section 16.2.2.2.1*.

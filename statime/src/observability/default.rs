@@ -4,7 +4,7 @@ use crate::datastructures::datasets::InternalDefaultDS;
 /// 8.2.1)
 ///
 /// See [InternalDefaultDS](crate::datastructures::datasets::InternalDefaultDS).
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct DefaultDS {
     /// The identity of a PTP node.
