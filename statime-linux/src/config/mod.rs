@@ -15,7 +15,7 @@ use timestamped_socket::interface::InterfaceName;
 
 use crate::tracing::LogLevel;
 
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq, Default)]
 #[serde(rename_all = "kebab-case", deny_unknown_fields)]
 pub struct Config {
     #[serde(default)]

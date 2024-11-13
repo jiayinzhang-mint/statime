@@ -11,11 +11,7 @@ use tokio::time;
 #[clap(author, version, about, long_about = None)]
 pub struct Args {
     /// Configuration file to use
-    #[clap(
-        long = "config",
-        short = 'c',
-        default_value = "/etc/statime/statime.toml"
-    )]
+    #[clap(long = "config", short = 'c', default_value = "./statime.toml")]
     config_file: Option<PathBuf>,
 }
 
